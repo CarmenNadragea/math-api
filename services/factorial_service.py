@@ -1,3 +1,7 @@
+from cache_config import cache
+
+
+@cache.memoize()
 def factorial(n: int) -> int:
     if n == 0 or n == 1:
         return 1
