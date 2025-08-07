@@ -1,19 +1,16 @@
-# Ignoră mediul virtual
+# Ignora mediul virtual
 venv/
 
-# Fișiere compilate Python
 __pycache__/
 *.pyc
 
-# Baze de date locale
 *.sqlite3
 *.db
 instance/
 
-# Fișiere sensibile / configurări
 .env
 
-# Fișiere editor / sistem
+# Fisiere editor/sistem
 .DS_Store
 *.log
 *.swp

@@ -1,32 +1,44 @@
+from flask import jsonify
 from models.request_log import RequestLog
+from models.request_schema import PowerRequest, FactorialRequest, FibonacciRequest
 from services.fibonacci_service import fibonacci
 from services.factorial_service import factorial
 from services.power_service import calculate_power
 from database import db
-from models.request_schema import PowerRequest, FactorialRequest, FibonacciRequest
+from log_producer import send_log
 
 
 def process_operation(operation: str, input_data: dict) -> dict:
     if operation == "power":
-        request_model = PowerRequest(**input_data)
-        result = calculate_power(request_model.base, request_model.exponent)
+        result = calculate_power(input_data["base"], input_data["exponent"])
     elif operation == "factorial":
-        request_model = FactorialRequest(**input_data)
-        result = factorial(request_model.number)
+        result = factorial(input_data["number"])
     elif operation == "fibonacci":
-        request_model = FibonacciRequest(**input_data)
-        result = fibonacci(request_model.number)
+        result = fibonacci(input_data["number"])
     else:
         raise ValueError(f"Unsupported operation: {operation}")
 
-    # Creează un nou log si il salveaza in baza de date
-    log = RequestLog(
-        operation=operation,
-        input=str(input_data),
-        result=str(result)
-    )
-    db.session.add(log)
-    db.session.commit()
+    # Trimite logul catre Kafka
+    send_log({
+        "operation": operation,
+        "input": input_data,
+        "result": result
+    })
 
-   # returneaza rezulatatul
     return {"result": result}
+
+
+def get_logs():
+    logs = RequestLog.query.order_by(RequestLog.timestamp.desc()).all()
+    result = []
+
+    for log in logs:
+        result.append({
+            "id": log.id,
+            "operation": log.operation,
+            "input": log.input,
+            "result": log.result,
+            "timestamp": log.timestamp.isoformat() if log.timestamp else None
+        })
+
+    return jsonify(result)

@@ -3,8 +3,6 @@ from cache_config import cache
 
 @cache.memoize()
 def fibonacci(n: int) -> int:
-    #verificare daca rezultatul este deja in cache
-    print(f"Calcul direct Fibonacci({n})")
     if n <= 0:
         return 0
     elif n == 1:
