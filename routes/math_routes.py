@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from controllers.math_controller import process_operation, get_logs  # ✅ ai nevoie de get_logs
+from controllers.math_controller import process_operation, get_logs 
 from flask_jwt_extended import create_access_token, jwt_required
 
 
@@ -16,7 +16,7 @@ def handle_operation(operation):
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-#Autentificare JWT(hardcodata pentru demo)
+#Autentificare JWT(hardcodata)
 @math_blueprint.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
