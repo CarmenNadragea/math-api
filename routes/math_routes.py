@@ -7,7 +7,6 @@ from flask_jwt_extended import create_access_token, jwt_required
 math_blueprint = Blueprint('math', __name__)
 
 @math_blueprint.route("/api/<operation>", methods=["POST"])
-@jwt_required()
 def handle_operation(operation):
     try:
         data = request.get_json()  # preia datele din body (JSON->dict)
